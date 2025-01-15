@@ -30,12 +30,12 @@ function App() {
             {/*<UseActionStateExample/>*/}
             {/*<UseFormStatusExample/>*/}
             {/*<UseOptimisticExample/>*/}
-            <DocumentMetadataAndStyleSheetsAndAsyncScriptsExample title="hello world!" authorContent="홍길동"
-                                                                  keywordsContent="HTML, CSS, JS"/>
-            {/*<div>*/}
-            {/*    <button className="border-red-500 border rounded p-2" onClick={handleClick}>숨기기/보이기</button>*/}
-            {/*    {isShow && <PreloadingResourcesExample/>}*/}
-            {/*</div>*/}
+            {/*<DocumentMetadataAndStyleSheetsAndAsyncScriptsExample title="hello world!" authorContent="홍길동"*/}
+            {/*                                                      keywordsContent="HTML, CSS, JS"/>*/}
+            <div>
+                <button className="border-red-500 border rounded p-2" onClick={handleClick}>숨기기/보이기</button>
+                {isShow && <PreloadingResourcesExample/>}
+            </div>
         </>
     )
 }
