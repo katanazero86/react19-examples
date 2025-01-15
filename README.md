@@ -1,6 +1,6 @@
 # React 19 API Examples
 
-1. `/src/components/DocumentMetadataAndStyleSheetsAndAsyncScriptsExample.tsx`
+### 1. `/src/components/DocumentMetadataAndStyleSheetsAndAsyncScriptsExample.tsx`
 - 메타데이터 태그가 자동으로 <head> 태그내로 이동.
 - meta, title 태그가 html 문서 <head> 태그로 위치하도록, 자동으로 호이스팅 처리 된다.
 
@@ -65,7 +65,7 @@ useEffect(() => {
 그래도 위와같이 스크립트를 동적으로 불러오는 코드를 직접 짜는것보다 간결하게 사용이 가능해서 좋다.   
 async 속성은 스크립트를 비동기로 로딩하고, 로딩이 완료되면 바로 실행을한다. defer 도 비동기로 로딩을 진행하나 HTML 파싱이 완료된 후 실행한다. 결론적으로는 실행시점이 다르다. async 는 만약 로딩이 빨리 끝난 스크립트가 있으면 순서에 상관없이 해당 스크립트부터 실행을 한다. defer 는 HTML 파싱이 완료된 후 실행을 하지만 HTML 문서에 나타난 순서대로 실행을 해준다.  
 
-2. `/src/components/PreloadingResourcesExample.tsx`
+### 2. `/src/components/PreloadingResourcesExample.tsx`
 - `react-dom` 패키지에서 제공해주는 `preload`, `preinit`, `preloadModule`, `preinitModule` 를 사용하여 리소스를 사전 로딩할 수 있다.
 - 컴포넌트는 state 에 따라 조건부 렌더링을 해줘도 사전에 불러와진 리소스를 중복하여 요청하지는 않는다.
 - 리소스 사전 로딩은 렌더링 시점과 이벤트 핸들러에서 동작이 이루어진다.
@@ -75,9 +75,7 @@ async 속성은 스크립트를 비동기로 로딩하고, 로딩이 완료되�
 ![img2.png](imgs/img2.png)
 
 preload 및 preinit 으로 호출되는 리소스들이 head 태그에 삽입되어있는 것이 확인이 가능하다.   
-이렇게 리액트에서 직접 개발자가 사전에 로딩이 되어야할 리소스를 쉽게 제어가 가능하다. 그러나, 모든 리소스를 사전에 로딩하면 페이지 렌더링이 오히려 느려질 위험이 있다.   
-
-
+이렇게 리액트에서 직접 개발자가 사전에 로딩이 되어야할 리소스를 쉽게 제어가 가능하다. 그러나, 모든 리소스를 사전에 로딩하면 페이지 렌더링이 오히려 느려질 위험이 있다.
 
 ---
 
