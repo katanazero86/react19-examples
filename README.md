@@ -77,6 +77,73 @@ async 속성은 스크립트를 비동기로 로딩하고, 로딩이 완료되�
 preload 및 preinit 으로 호출되는 리소스들이 head 태그에 삽입되어있는 것이 확인이 가능하다.   
 이렇게 리액트에서 직접 개발자가 사전에 로딩이 되어야할 리소스를 쉽게 제어가 가능하다. 그러나, 모든 리소스를 사전에 로딩하면 페이지 렌더링이 오히려 느려질 위험이 있다.
 
+### 3. `/src/components/RefExample.tsx`
+- React 19에서 하위(자식) 컴포넌트에 ref prop 을 그대로 사용이 가능해졌다.
+- ref prop 은 RefObject 또는 RefCallback 타입이 될 수 있으므로 Ref<T> 타입으로 지정해준다.
+- forwardRef 를 사용하지 않음으로써 코드가 간단해지는 이점을 얻을 수 있다.
+- 이전에는 forwardRef 사용을 피하기 위해서는 childRef 와 같은 이름으로 명명해야했는데 이제는 ref prop 명을 그대로 사용함으로써 동일한 인터페이스를 유지가 가능하고 ref prop 이름을 명명하는데 고민을 하지 않아도 된다.
+
+```jsx 
+// before React 19
+
+function App() {
+    const buttonRef = useRef();
+
+    const onButtonClick = () => console.log(buttonRef.current);
+
+    return (
+        <button ref={buttonRef} onClick={onButtonClick}>
+            클릭
+        </button>
+    );
+}
+
+const Button = forwardRef((props, ref) => {
+    return <button ref={ref} {...props} />;
+});
+```
+
+```jsx
+// before React 19
+
+import React, { useRef } from 'react';
+
+function App() {
+    const buttonRef = useRef();
+
+    const onButtonClick = () => {
+        console.log(buttonRef.current);  // buttonRef를 직접 사용
+    };
+
+    return (
+        <Button onClick={onButtonClick} buttonRef={buttonRef} />
+    );
+}
+
+function Button({ onClick, buttonRef }) {
+    return (
+        <button ref={buttonRef} onClick={onClick}>
+            클릭
+        </button>
+    );
+}
+
+export default App;
+```
+
+### 4. `/src/components/UseActionState.tsx`
+- React 19에 추가된 훅으로 폼 액션을 기반으로 상태를 관리하는 훅이다.
+```js
+const [state, formAction, isPending] = useActionState(fn, initialState, permalink?);
+```
+- useState() 와 유사한데, 상태 업데이트를 formAction 함수에서 반환한 값으로 한다고 생각하면 된다.
+- fn 인자에 액션 함수를 전달한다.
+- form 태그에 action prop 또는 button 태그에 formAction prop 에 formAction 을 바인딩해주면 된다. 이렇게 사용하면 formData 를 넘겨주므로 form 상태를 비제어로 관리가 가능해진다.
+- 작성한 코드에서는 Add to Cart 를 누르고 하나가 로딩 상태가 걸리면 다른 하나도 로딩상태가 걸린다. 이것은 CSR 환경이라서 그런거라 생각한다. 서버 환경이라면 각 요청이 개별로 처리되므로 하나가 로딩이 걸리면 다른 작업도 로딩이 걸리지는 않을거다.
+- isPending 을 통하여, formAction 처리 상태를 다룰 수 있다.
+- useActionState() 훅을 활용하여 form 에 대한 상태관리, 비동기 작업, 로딩 상태를 체크할 수 있다. 이를 통해 개발 경험 향상과 액션 결과에 따른 새로고침 없는 상태 업데이트는 사용자 경험을 향상 시킨다. 다만, formData 를 전달받는 형태로 사용하면 유효성 검사가 액션 함수로 위임이 되는데 이런 경우에느 유효성 검사를 하는 반복적인 코드가 발생할 확률이 높다. 이를 어떻게 추상화하고 모듈화 시킬지를 또 고민을 해야 할 것이다.
+
+
 ---
 
 # React + TypeScript + Vite

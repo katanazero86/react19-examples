@@ -22,16 +22,16 @@ function App() {
             <h1 className="text-3xl font-bold underline text-indigo-600">
                 Hello world!
             </h1>
-            {/*<MyContextProvider>*/}
-            {/*    <UseContextExample/>*/}
-            {/*</MyContextProvider>*/}
-            {/*<RefExample/>*/}
-            {/*<UseAPIExample/>*/}
-            {/*<UseActionStateExample/>*/}
-            {/*<UseFormStatusExample/>*/}
-            {/*<UseOptimisticExample/>*/}
-            {/*<DocumentMetadataAndStyleSheetsAndAsyncScriptsExample title="hello world!" authorContent="홍길동"*/}
-            {/*                                                      keywordsContent="HTML, CSS, JS"/>*/}
+            <MyContextProvider>
+                <UseContextExample/>
+            </MyContextProvider>
+            <RefExample/>
+            <UseAPIExample/>
+            <UseActionStateExample/>
+            <UseFormStatusExample/>
+            <UseOptimisticExample/>
+            <DocumentMetadataAndStyleSheetsAndAsyncScriptsExample title="hello world!" authorContent="홍길동"
+                                                                  keywordsContent="HTML, CSS, JS"/>
             <div>
                 <button className="border-red-500 border rounded p-2" onClick={handleClick}>숨기기/보이기</button>
                 {isShow && <PreloadingResourcesExample/>}
