@@ -143,6 +143,32 @@ const [state, formAction, isPending] = useActionState(fn, initialState, permalin
 - isPending 을 통하여, formAction 처리 상태를 다룰 수 있다.
 - useActionState() 훅을 활용하여 form 에 대한 상태관리, 비동기 작업, 로딩 상태를 체크할 수 있다. 이를 통해 개발 경험 향상과 액션 결과에 따른 새로고침 없는 상태 업데이트는 사용자 경험을 향상 시킨다. 다만, formData 를 전달받는 형태로 사용하면 유효성 검사가 액션 함수로 위임이 되는데 이런 경우에느 유효성 검사를 하는 반복적인 코드가 발생할 확률이 높다. 이를 어떻게 추상화하고 모듈화 시킬지를 또 고민을 해야 할 것이다.
 
+### 5. `src/components/UseAPIExample.tsx` / `src/components/UseContextExample.tsx`
+- React 19에 추가된 훅으로 context 를 읽거나, Promise 를 처리한다.
+```ts
+export type Usable<T> = PromiseLike<T> | Context<T>;
+
+export function use<T>(usable: Usable<T>): T;
+```
+- use() 훅은 인자로 Usable 타입을 받는다. Usable 타입을 보면 PromiseLike 라고 되어있는것을 보니 thenable 객체(then 메서드를 가진 객체)도 처리가 가능할 것으로 생각이 된다.(Promise 는 항상 thenable 이다. 하지만, thenable 이 항상 Promise 인 것은 아니다.)
+```js
+// thenable 객체의 예시
+const thenable = {
+  then: function(resolve, reject) {
+    resolve('데이터');
+  }
+};
+
+// Promise는 thenable을 자동으로 처리할 수 있습니다
+Promise.resolve(thenable).then(data => {
+  console.log(data); // '데이터' 출력
+});
+```
+- use 훅을 사용하여, Context 를 구독하는것은 매우 간단하다. useContext() 훅 대신에 use() 훅을 사용하면 끝이다.
+- use 훅을 사용한, Promise 처리(비동기 data fetch)같은 경우에는 `Suspense` 와 `ErrorBoundary` 를 같이 사용해줘야한다. use 훅에서 Promise 가 resolve 될때까지 렌더링을 중단한다. 그래서 이러한 던져진 Promise 상태를 처리할 Suspense 가 필요한거다.
+- use 훅을 사용하여, Promise 를 처리할 때 에러가 나는 경우도 있을거다. 이건 어떻게 처리해야하나하다가 이부분은 ErrorBoundary 로 해결이 가능하다.
+- use 훅을 사용하면, 하나의 API로 Context 와 Promise 처리가 모두 가능하다. 그리고 Promise 처리로 인해 동시성 렌더링을 쉽게 구현이 가능하다.
+- use 훅을 사용하여, 읽을 수 있는 데이터가 많아지면 복잡도가 증가하는것은 아닌가? 생각을 했다. 그런데 use 훅 입장에서는 일관된 데이터를 읽는다는 패턴을 제공하는 점에서 오히려 추상화가 잘 되었구나 생각을 하였다. 그리고 use 훅을 통해 읽고싶은 데이터를 조건부로도 실행이 가능하니 이후에도 다양한 데이터 읽기를 use 훅이 지원을 하겠구나라는 생각도 들었다.
 
 ---
 

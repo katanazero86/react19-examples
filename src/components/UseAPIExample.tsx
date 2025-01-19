@@ -44,6 +44,7 @@ function Child({randomUserPromise}: ChildProps) {
     // use는 데이터가 resolve 후에 컴포넌트를 다시 렌더링
     // 서버 컴포넌트에서 Promise를 생성하고 이를 클라이언트 컴포넌트로 전달하는 것이 권장
     const randomUser = use(randomUserPromise);
+    // const randomUser = use(fetchRandomUser()); // 무한 로딩..! Promise 상태가 변경되어 그걸 던질때마다 재렌더링이 일어나면서 fetchRandom() 함수를 또 실행하니 계속 무한으로 반복이 일어남.
     console.log(randomUser);
 
     return (
