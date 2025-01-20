@@ -23,7 +23,7 @@ export default function UseOptimisticExample() {
         const msg = formData.get("message") as string;
         addOptimistic2(msg);
         try {
-            const result = await deliverMessageError(msg);
+            const result = await deliverMessageError(msg); // error
             setData2(prevState => [...prevState, result]);
         } catch(e) {
             // setData2(prevState => [...prevState, 'test']); // 이렇게 하면, 에러가 났어도 반영이 된다.
