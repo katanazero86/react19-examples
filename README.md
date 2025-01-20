@@ -143,7 +143,7 @@ const [state, formAction, isPending] = useActionState(fn, initialState, permalin
 - isPending 을 통하여, formAction 처리 상태를 다룰 수 있다.
 - useActionState() 훅을 활용하여 form 에 대한 상태관리, 비동기 작업, 로딩 상태를 체크할 수 있다. 이를 통해 개발 경험 향상과 액션 결과에 따른 새로고침 없는 상태 업데이트는 사용자 경험을 향상 시킨다. 다만, formData 를 전달받는 형태로 사용하면 유효성 검사가 액션 함수로 위임이 되는데 이런 경우에느 유효성 검사를 하는 반복적인 코드가 발생할 확률이 높다. 이를 어떻게 추상화하고 모듈화 시킬지를 또 고민을 해야 할 것이다.
 
-### 5. `src/components/UseAPIExample.tsx` / `src/components/UseContextExample.tsx`
+### 5. `/src/components/UseAPIExample.tsx` / `src/components/UseContextExample.tsx`
 - React 19에 추가된 훅으로 context 를 읽거나, Promise 를 처리한다.
 ```ts
 export type Usable<T> = PromiseLike<T> | Context<T>;
@@ -169,6 +169,37 @@ Promise.resolve(thenable).then(data => {
 - use 훅을 사용하여, Promise 를 처리할 때 에러가 나는 경우도 있을거다. 이건 어떻게 처리해야하나하다가 이부분은 ErrorBoundary 로 해결이 가능하다.
 - use 훅을 사용하면, 하나의 API로 Context 와 Promise 처리가 모두 가능하다. 그리고 Promise 처리로 인해 동시성 렌더링을 쉽게 구현이 가능하다.
 - use 훅을 사용하여, 읽을 수 있는 데이터가 많아지면 복잡도가 증가하는것은 아닌가? 생각을 했다. 그런데 use 훅 입장에서는 일관된 데이터를 읽는다는 패턴을 제공하는 점에서 오히려 추상화가 잘 되었구나 생각을 하였다. 그리고 use 훅을 통해 읽고싶은 데이터를 조건부로도 실행이 가능하니 이후에도 다양한 데이터 읽기를 use 훅이 지원을 하겠구나라는 생각도 들었다.
+
+### 6. `/src/components/UseFormStatusExample.tsx`
+- React 19에 폼 제출의 상태를 제공해주는 훅이다.
+```js
+const { pending, data, method, action } = useFormStatus();
+```
+- 제출 중, 제출된 data, 제출된 HTTP 메서드, form action 에 전달된 함수 레퍼런스 정보를 얻을 수 있다.
+- useFormStatus() 훅 사용 시 주의점은 상위 form 태그 내부에서 사용이 가능하다는점이다.
+```
+function Form() {
+  // `pending`은 절대 true가 되지 않습니다
+  // useFormStatus는 현재 컴포넌트에서 렌더링한 폼을 추적하지 않습니다
+  const { pending } = useFormStatus();
+  return <form action={submit}></form>;
+}
+// form 태그 내부에 위치한 컴포넌트에서 useFormStatus 를 사용해야함.
+```
+- onSubmit prop 에서 액션 함수를 호출하여 처리가 가능하나 이 경우에 useFormStatus() 가 동작하지 않음.(action 또는 formAction prop 에 액션 함수를 바인딩해야함.)
+- 에러 핸들링은 throw 해준 후, `ErrorBoundary` 에서 이를 잡아서 처리한다.
+- 해당 훅을 사용하여, form 에 대한 정보를 얻고 따로 별도의 상태관리 없이 form 의 loading 상태 처리가 가능하다.(그리고, 이러한 상태는 form 태그내에 존재하는 컴포넌트에서 처리가 되기에 불필요한 상위 컴포넌트 재렌더링이 방지가 된다.)
+
+### 7. `/src/components/UseOptimisticExample.tsx`
+- React 19에 추가된 낙관적 업데이트(Optimistic Updates)를 쉽게 구현할 수 있게 해주는 훅이다.
+```js
+const [optimisticState, addOptimistic] = useOptimistic(state, updateFn);
+```
+- 서버 응답을 기다리지 않고 즉각적인 UI 업데이트를 통하여 사용자 경험을 향상시킨다.
+- 실패 시, 자동으로 이전 상태로 롤백한다.
+- 낙관적 상태 업데이트는 실제 상태를 자동으로 동기화 한다.
+- 에러가 나서, 상태를 업데이트 해버리면 해당 상태로 동기화를 한다.(useOptimistic 훅이 참조하는 상태를 기반으로 동기화)
+- 참조하는 상태를 기반으로 자동으로 동기화되기 때문에 개발자는 따로 동기화 코드를 작성할 필요가없다.
 
 ---
 
